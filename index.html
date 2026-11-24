@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VELKORA · Digital Systems — Portfólio de Projetos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',sans-serif;
+    background:#171E2C;
+    color:#F3F5F8;
+    overflow-x:hidden;line-height:1.6;
+    min-height:100vh;
+  }
+  /* Backgrounds decorados */
+  .bg-mesh{
+    position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(52,75,104,0.22), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 20%, rgba(141,174,208,0.18), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 50% 110%, rgba(14,165,233,0.18), transparent 60%),
+      radial-gradient(ellipse 40% 35% at 10% 85%, rgba(141,174,208,0.14), transparent 60%);
+  }
+  .bg-grid{
+    position:fixed;inset:0;z-index:-1;opacity:.25;
+    background-image:
+      linear-gradient(rgba(141,174,208,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(141,174,208,0.06) 1px, transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);
+    -webkit-mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);
+  }
+  .noise::before{
+    content:"";position:fixed;inset:0;z-index:-1;opacity:.035;pointer-events:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
+  }
+  .container{max-width:1200px;margin:0 auto;padding:0 24px}
+  /* NAVBAR */
+  nav{
+    position:sticky;top:0;z-index:100;
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    background:rgba(23,30,44,0.7);
+    border-bottom:1px solid rgba(141,174,208,0.08);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+  .brand{display:flex;align-items:center;gap:12px;font-family:'Space Grotesk',sans-serif;font-weight:800;color:#F3F5F8;letter-spacing:-0.01em;text-decoration:none}
+  .brand-monogram{
+    width:44px;height:40px;border-radius:10px;position:relative;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,rgba(32,43,61,.9),rgba(52,75,104,.55));
+    box-shadow:0 8px 24px rgba(52,75,104,.35),inset 0 0 0 1px rgba(141,174,208,.18);
+  }
+  .brand-text{display:flex;flex-direction:column;line-height:1}
+  .brand-name{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.18rem;letter-spacing:.02em;color:#F3F5F8}
+  .brand-sub{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.22em;color:#8DAED0;margin-top:4px}
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links a{color:#8DAED0;text-decoration:none;font-weight:500;font-size:.92rem;transition:.2s}
+  .nav-links a:hover{color:#8DAED0}
+  .nav-cta{
+    padding:10px 20px;border-radius:11px;
+    background:linear-gradient(135deg,#344B68,#8DAED0);
+    color:#F3F5F8 !important;font-weight:700;font-size:.88rem;
+    box-shadow:0 6px 22px rgba(52,75,104,.35);
+    transition:.2s;
+  }
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(141,174,208,.4)}
+  .hamburger{display:none;background:none;border:none;color:#F3F5F8;cursor:pointer}
+  /* HERO */
+  .hero{padding:80px 0 70px;position:relative}
+  .hero-inner{
+    display:grid;grid-template-columns:1fr;gap:0;align-items:center;
+  }
+  .hero-logo{
+    display:flex;justify-content:center;margin-bottom:22px;
+    filter:drop-shadow(0 18px 40px rgba(52,75,104,.45));
+  }
+  .hero-text{text-align:center}
+  .hero-chip{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 18px;border-radius:999px;margin-bottom:26px;
+    background:rgba(52,75,104,0.09);
+    border:1px solid rgba(141,174,208,0.28);
+    font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;
+    color:#8DAED0;letter-spacing:.04em;
+  }
+  .hero-chip::before{
+    content:"";width:8px;height:8px;border-radius:50%;background:#8DAED0;
+    animation:pulse 1.8s ease-in-out infinite;box-shadow:0 0 0 0 rgba(141,174,208,.45);
+  }
+  @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(141,174,208,.45)}50%{opacity:.5;box-shadow:0 0 0 10px rgba(141,174,208,0)}}
+  .hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(2.1rem,4.6vw,3.4rem);
+    font-weight:800;line-height:1.08;letter-spacing:-.025em;
+    color:#F3F5F8;margin-bottom:14px;
+  }
+  .hero h1 .nm{
+    background:linear-gradient(120deg,#8DAED0 0%,#38bdf8 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero-role{
+    font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:600;
+    color:#8DAED0;margin-bottom:22px;letter-spacing:.04em;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+  }
+  .hero-role .dot{width:5px;height:5px;border-radius:50%;background:#6B829E}
+  .hero-loc{
+    display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;
+    font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#8DAED0;font-weight:600;letter-spacing:.03em;
+  }
+  .hero-loc svg{width:14px;height:14px;color:#8DAED0}
+  .hero-lead{
+    font-size:1.05rem;color:#cbd5e1;max-width:620px;margin:0 auto 30px;line-height:1.8;
+  }
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px;justify-content:center}
+  .hero-stats{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:560px;margin:0 auto;
+  }
+  .mini-stat{
+    padding:20px 14px;border-radius:16px;text-align:center;
+    background:rgba(32,43,61,.55);
+    border:1px solid rgba(141,174,208,.09);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    transition:.3s;
+  }
+  .mini-stat:hover{transform:translateY(-4px);border-color:rgba(141,174,208,.25)}
+  .mini-stat .num{
+    font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.9rem;line-height:1;
+    background:linear-gradient(135deg,#8DAED0,#A9C6E4);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;
+  }
+  .mini-stat:nth-child(2) .num{background:linear-gradient(135deg,#5B9BD5,#8DAED0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .mini-stat:nth-child(3) .num{background:linear-gradient(135deg,#344B68,#6B829E);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .mini-stat:nth-child(4) .num{background:linear-gradient(135deg,#A9C6E4,#F3F5F8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .mini-stat .lbl{font-size:.78rem;color:#6B829E;font-weight:500;letter-spacing:.04em;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+  /* SECTION HEADERS */
+  section{padding:90px 0;position:relative}
+  .section-head{text-align:center;margin-bottom:56px}
+  .section-tag{
+    display:inline-block;padding:6px 14px;border-radius:999px;margin-bottom:16px;
+    background:rgba(52,75,104,.1);border:1px solid rgba(141,174,208,.25);
+    font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;
+    color:#8DAED0;letter-spacing:.06em;
+  }
+  .section-head h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(1.8rem,3.8vw,2.6rem);
+    font-weight:800;line-height:1.15;color:#F3F5F8;margin-bottom:14px;letter-spacing:-.02em;
+  }
+  .section-head h2 span{
+    background:linear-gradient(135deg,#8DAED0,#A9C6E4 60%,#8DAED0);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .section-head p{font-size:1.05rem;color:#8DAED0;max-width:620px;margin:0 auto;line-height:1.75}
+  /* PROJECTS GRID — cards "janela de app" (cada projeto usa a própria paleta via --c1/--c2/--c3) */
+  .projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .project{
+    --c1:#8DAED0;--c2:#344B68;--c3:#A9C6E4;--ink:#8DAED0;--on:#fff;
+    position:relative;isolation:isolate;display:flex;flex-direction:column;
+    border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;
+    background:linear-gradient(165deg,rgba(32,43,61,.72),rgba(23,30,44,.94));
+    border:1px solid rgba(141,174,208,.1);
+    transition:border-color .4s,box-shadow .4s;
+  }
+  /* aurora: a cor própria do projeto acende no canto superior */
+  .project::after{
+    content:"";position:absolute;left:0;right:0;top:0;height:280px;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(ellipse 65% 90% at 0% 0%,color-mix(in srgb,var(--c1) 48%,transparent),transparent 72%),
+      radial-gradient(ellipse 55% 80% at 100% 0%,color-mix(in srgb,var(--c2) 34%,transparent),transparent 74%);
+    opacity:.85;transition:opacity .45s;
+  }
+  /* borda de luz que segue o mouse, nas cores do projeto */
+  .project::before{
+    content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;z-index:2;pointer-events:none;
+    background:radial-gradient(300px circle at var(--mx,50%) var(--my,0%),var(--c1),var(--c2) 45%,transparent 75%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    opacity:0;transition:opacity .35s;
+  }
+  .project:hover::before,.project:focus-visible::before{opacity:1}
+  .project:hover::after,.project:focus-visible::after{opacity:1}
+  .project:hover{box-shadow:0 28px 60px -28px color-mix(in srgb,var(--c1) 45%,transparent)}
+  .project:focus-visible{outline:2px solid var(--c1);outline-offset:3px}
+
+  /* barra de janela: três pontos = paleta do projeto; URL real; status */
+  .win-bar{display:flex;align-items:center;gap:12px;height:46px;padding:0 16px;background:rgba(15,21,32,.35);border-bottom:1px solid rgba(141,174,208,.08)}
+  .win-dots{display:flex;gap:6px;flex:none}
+  .win-dots i{display:block;width:8px;height:8px;border-radius:50%}
+  .win-dots i:nth-child(1){background:var(--c1)}
+  .win-dots i:nth-child(2){background:var(--c2)}
+  .win-dots i:nth-child(3){background:var(--c3)}
+  .win-url{
+    flex:1;min-width:0;padding:5px 10px;border-radius:7px;
+    font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:#6B829E;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    background:rgba(23,30,44,.55);box-shadow:inset 0 0 0 1px rgba(141,174,208,.08);
+  }
+  .win-status{display:inline-flex;align-items:center;gap:7px;flex:none;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:#8DAED0}
+  .win-status::before{content:"";width:6px;height:6px;border-radius:50%;background:#6B829E}
+  .win-status.live{color:#cbd5e1}
+  .win-status.live::before{background:#34d399;animation:live-ping 2s ease-in-out infinite}
+  @keyframes live-ping{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}50%{box-shadow:0 0 0 6px rgba(52,211,153,0)}}
+
+  .project > .win-bar,.project > .project-thumb,.project > .project-body{position:relative;z-index:1}
+  .project-thumb{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:26px 22px 0}
+  .proj-icon{
+    width:54px;height:54px;border-radius:15px;display:grid;place-items:center;color:var(--on);
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    box-shadow:0 14px 30px -10px color-mix(in srgb,var(--c1) 70%,transparent),inset 0 0 0 1px rgba(255,255,255,.22);
+  }
+  .proj-icon svg{width:26px;height:26px}
+  .proj-badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:55%}
+  .pb{
+    padding:4px 10px;border-radius:999px;white-space:nowrap;
+    font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.02em;color:var(--ink);
+    background:color-mix(in srgb,var(--c1) 12%,transparent);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c1) 32%,transparent);
+  }
+
+  .project-body{display:flex;flex-direction:column;gap:14px;flex:1;padding:22px 22px 20px}
+  .proj-title{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.5rem;line-height:1.15;letter-spacing:-.02em;color:#F3F5F8}
+  .proj-desc{font-size:.92rem;line-height:1.7;color:#8DAED0;flex:1}
+  .proj-tags{display:flex;flex-wrap:wrap;gap:6px}
+  .tag{
+    display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:7px;
+    font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:#cbd5e1;
+    background:rgba(32,43,61,.6);box-shadow:inset 0 0 0 1px rgba(141,174,208,.12);
+  }
+  .tag::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--ink);flex:none}
+  .proj-foot{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(141,174,208,.08)}
+  .proj-cta-label{font-weight:700;font-size:.85rem;color:var(--ink)}
+  .proj-btn{
+    width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--ink);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c1) 40%,transparent);
+    transition:background .3s,color .3s,box-shadow .3s;
+  }
+  .proj-btn svg{width:16px;height:16px;transition:transform .3s}
+  .project:hover .proj-btn,.project:focus-visible .proj-btn{background:linear-gradient(135deg,var(--c1),var(--c2));color:var(--on);box-shadow:0 8px 20px -6px color-mix(in srgb,var(--c1) 70%,transparent)}
+  .project:hover .proj-btn svg{transform:translateX(2px)}
+  .project[href^="http"]:hover .proj-btn svg{transform:translate(2px,-2px)}
+  @media (prefers-reduced-motion:reduce){
+    .project,.project::before,.project::after,.proj-btn,.proj-btn svg{transition:none!important}
+    .win-status.live::before{animation:none!important}
+  }
+  /* QUEM SOU EU */
+  .about-wrap{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:56px;align-items:center;max-width:1040px;margin:0 auto}
+  .about-photo{display:flex;justify-content:center}
+  .photo-frame{
+    position:relative;width:100%;max-width:300px;aspect-ratio:4/5;border-radius:24px;padding:3px;
+    background:linear-gradient(160deg,rgba(141,174,208,.55),rgba(52,75,104,.25) 50%,rgba(91,155,213,.35));
+    box-shadow:0 30px 80px -20px rgba(52,75,104,.45),0 0 0 1px rgba(141,174,208,.12);
+  }
+  .photo-frame::after{content:"";position:absolute;inset:3px;border-radius:21px;pointer-events:none;background:linear-gradient(180deg,transparent 55%,rgba(23,30,44,.55) 100%)}
+  .photo-img{width:100%;height:100%;border-radius:21px;object-fit:cover;display:block;background:#171E2C}
+  .photo-badge{position:absolute;left:16px;right:16px;bottom:16px;z-index:2;padding:14px 18px;border-radius:14px;background:rgba(23,30,44,.78);border:1px solid rgba(141,174,208,.22);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 12px 30px rgba(0,0,0,.4)}
+  .photo-badge .bp-name{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.1rem;color:#F3F5F8;letter-spacing:-.01em}
+  .photo-badge .bp-role{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:#8DAED0;font-weight:600;letter-spacing:.05em;margin-top:2px}
+  .about-text{text-align:left}
+  .about-text .about-role{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#8DAED0;font-weight:700;letter-spacing:.06em;margin-bottom:14px}
+  .about-text h3{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,3vw,2rem);font-weight:800;color:#F3F5F8;margin-bottom:16px;letter-spacing:-.02em;line-height:1.2}
+  .about-text p{color:#cbd5e1;line-height:1.85;margin-bottom:16px;font-size:1rem}
+  .about-text p strong{color:#F3F5F8;font-weight:700}
+  /* TECH SECTION */
+  .tech-wrap{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:900px;margin:0 auto}
+  .tech{
+    padding:24px 14px;border-radius:16px;text-align:center;
+    background:rgba(32,43,61,.55);
+    border:1px solid rgba(141,174,208,.08);
+    transition:.3s;
+  }
+  .tech:hover{transform:translateY(-5px);border-color:rgba(141,174,208,.25);background:rgba(32,43,61,.8)}
+  .tech-ic{
+    width:42px;height:42px;margin:0 auto 10px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;font-weight:800;
+    font-family:'JetBrains Mono',monospace;font-size:.9rem;
+  }
+  .tech:nth-child(1) .tech-ic{background:linear-gradient(135deg,#344B68,#8DAED0);color:#F3F5F8}
+  .tech:nth-child(2) .tech-ic{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#eff6ff}
+  .tech:nth-child(3) .tech-ic{background:linear-gradient(135deg,#26374f,#4C6E9B);color:#F3F5F8}
+  .tech:nth-child(4) .tech-ic{background:linear-gradient(135deg,#344B68,#5E80AE);color:#F3F5F8}
+  .tech:nth-child(5) .tech-ic{background:linear-gradient(135deg,#8DAED0,#A9C6E4);color:#1b2432}
+  .tech strong{display:block;color:#F3F5F8;font-weight:700;font-size:.92rem;font-family:'Space Grotesk',sans-serif}
+  .tech small{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#6B829E;letter-spacing:.04em}
+  /* CTA */
+  .cta-wrap{
+    padding:64px 50px;border-radius:26px;text-align:center;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,rgba(52,75,104,.14),rgba(141,174,208,.1),rgba(23,30,44,1));
+    border:1px solid rgba(141,174,208,.25);
+  }
+  .cta-wrap::before{
+    content:"";position:absolute;inset:0;z-index:-1;
+    background:
+      radial-gradient(circle at 20% 20%,rgba(52,75,104,.35),transparent 45%),
+      radial-gradient(circle at 80% 80%,rgba(141,174,208,.3),transparent 45%);
+  }
+  .cta-wrap h3{
+    font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,3.2vw,2.2rem);
+    font-weight:800;color:#F3F5F8;margin-bottom:14px;letter-spacing:-.02em;line-height:1.25;
+  }
+  .cta-wrap h3 span{background:linear-gradient(135deg,#8DAED0,#A9C6E4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .cta-wrap p{color:#cbd5e1;font-size:1.02rem;max-width:540px;margin:0 auto 28px;line-height:1.75}
+  .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn-main{
+    padding:14px 28px;border-radius:12px;
+    background:linear-gradient(135deg,#344B68,#8DAED0);color:#fff;
+    font-weight:800;font-size:.95rem;text-decoration:none;
+    display:inline-flex;align-items:center;gap:10px;
+    box-shadow:0 10px 32px rgba(52,75,104,.45);
+    transition:.2s;
+  }
+  .btn-main:hover{transform:translateY(-3px);box-shadow:0 14px 42px rgba(141,174,208,.5)}
+  .btn-main svg{width:18px;height:18px}
+  .btn-alt{
+    padding:14px 28px;border-radius:12px;
+    background:rgba(32,43,61,.6);color:#f1f5f9;
+    font-weight:600;font-size:.95rem;text-decoration:none;
+    display:inline-flex;align-items:center;gap:10px;
+    border:1px solid rgba(141,174,208,.2);
+    transition:.2s;
+  }
+  .btn-alt:hover{background:rgba(42,54,80,.8);border-color:rgba(141,174,208,.35)}
+  .btn-alt svg{width:18px;height:18px}
+  /* FOOTER */
+  footer{padding:56px 0 34px;border-top:1px solid rgba(141,174,208,.08);margin-top:40px}
+  .foot-inner{display:flex;flex-direction:column;gap:22px;align-items:center;text-align:center}
+  .foot-brand{display:flex;align-items:center;gap:12px;font-family:'Space Grotesk',sans-serif;font-weight:800;color:#F3F5F8}
+  .foot-brand .monogram{
+    width:42px;height:38px;border-radius:10px;
+    background:linear-gradient(135deg,rgba(32,43,61,.9),rgba(52,75,104,.55));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 1px rgba(141,174,208,.18);
+  }
+  .foot-brand-text{display:flex;flex-direction:column;line-height:1}
+  .foot-name{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.12rem;letter-spacing:.02em;color:#F3F5F8}
+  .foot-sub{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.22em;color:#8DAED0;margin-top:4px}
+  .foot-brand span.acc{background:linear-gradient(135deg,#8DAED0,#A9C6E4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .foot-links{display:flex;gap:28px;flex-wrap:wrap;justify-content:center}
+  .foot-links a{color:#6B829E;text-decoration:none;font-size:.88rem;font-weight:500;transition:.2s}
+  .foot-links a:hover{color:#8DAED0}
+  .foot-copy{color:#5A7090;font-size:.82rem;font-family:'JetBrains Mono',monospace;letter-spacing:.03em}
+  /* REVEAL */
+  .reveal{opacity:0;transform:translateY(30px);transition:.75s cubic-bezier(.4,0,.2,1)}
+  .reveal.on{opacity:1;transform:translateY(0)}
+  /* RESPONSIVE */
+  @media(max-width:980px){
+    .hero{padding:60px 0 50px}
+    .hero-inner{grid-template-columns:1fr;gap:36px;text-align:center}
+    .hero-text{text-align:center}
+    .hero-role{justify-content:center}
+    .hero-cta{justify-content:center}
+    .nav-links{display:none}
+    .hamburger{display:block}
+    .nav-links.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:rgba(23,30,44,.98);padding:22px 24px;border-bottom:1px solid rgba(141,174,208,.08);gap:16px;z-index:99}
+    .hero-stats{grid-template-columns:repeat(2,1fr);margin:0 auto}
+    .about-wrap{grid-template-columns:1fr;gap:36px}
+    .about-text{text-align:center}
+    .photo-frame{max-width:260px;margin:0 auto}
+    .projects-grid{grid-template-columns:repeat(2,1fr)}
+    .tech-wrap{grid-template-columns:repeat(5,1fr)}
+    section{padding:70px 0}
+    .cta-wrap{padding:44px 28px}
+  }
+  @media(max-width:680px){
+    .projects-grid{grid-template-columns:1fr}
+    .tech-wrap{grid-template-columns:repeat(3,1fr)}
+    .hero-stats{grid-template-columns:repeat(2,1fr)}
+    .photo-frame{max-width:240px}
+    .hero-cta{flex-direction:column;align-items:stretch}
+    .cta-wrap{padding:36px 22px}
+    .cta-btns{flex-direction:column;align-items:stretch}
+    .btn-main,.btn-alt{justify-content:center}
+  }
+</style>
+</head>
+<body class="noise">
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="container nav-inner">
+    <a href="#top" class="brand">
+      <div class="brand-monogram">
+        <svg viewBox="0 0 100 90" width="26" height="24" aria-hidden="true">
+          <polygon points="8,6 32,6 29,24 5,24" fill="#F3F5F8"/>
+          <polygon points="10,30 34,30 37,84 13,84" fill="#344B68"/>
+          <polygon points="50,6 74,6 61,84 37,84" fill="#8DAED0"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">VELKORA</span>
+        <span class="brand-sub">DIGITAL SYSTEMS</span>
+      </div>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#sobre">Sobre</a>
+      <a href="#projetos">Projetos</a>
+      <a href="#tecnologias">Tecnologias</a>
+      <a href="#quem-sou-eu">Quem Sou Eu</a>
+      <a href="#projetos" class="nav-cta">Ver Portfólio</a>
+    </div>
+    <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <div class="hero-chip reveal">DIGITAL SYSTEMS</div>
+      <div class="hero-logo reveal">
+        <svg viewBox="0 0 100 90" width="92" height="82" aria-hidden="true">
+          <polygon points="8,6 32,6 29,24 5,24" fill="#F3F5F8"/>
+          <polygon points="10,30 34,30 37,84 13,84" fill="#344B68"/>
+          <polygon points="50,6 74,6 61,84 37,84" fill="#8DAED0"/>
+        </svg>
+      </div>
+      <div class="reveal">
+        <h1><span class="nm">VELKORA</span></h1>
+      </div>
+      <div class="hero-role reveal">
+        <span>DIGITAL SYSTEMS</span>
+        <span class="dot"></span>
+        <span>ENGINEERING POSSIBILITIES</span>
+      </div>
+      <p class="hero-lead reveal">
+        Desenvolvemos sistemas confiáveis, performáticos e bem estruturados.
+        Responsabilidade técnica, código limpo e comunicação clara em cada etapa —
+        do planejamento ao deploy.
+      </p>
+      <div class="hero-cta reveal">
+        <a href="mailto:contato@rafaelrovati.dev" class="btn-main">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Entrar em Contato
+        </a>
+        <a href="#projetos" class="btn-alt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Ver Portfólio
+        </a>
+      </div>
+      <div class="hero-stats reveal">
+        <div class="mini-stat">
+          <div class="num">11+</div>
+          <div class="lbl">Projetos</div>
+        </div>
+        <div class="mini-stat">
+          <div class="num">100%</div>
+          <div class="lbl">Standalone</div>
+        </div>
+        <div class="mini-stat">
+          <div class="num">Fast</div>
+          <div class="lbl">Performance</div>
+        </div>
+        <div class="mini-stat">
+          <div class="num">UI/UX</div>
+          <div class="lbl">Premium</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- SOBRE / PROJETOS -->
+<section id="sobre" style="padding-top:30px">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-tag">// PORTFÓLIO</div>
+      <h2>Projetos recentes que <span>entreguei com carinho</span></h2>
+      <p>Cada linha de código pensada em performance, responsividade e design que agrada o olhar e converte.</p>
+    </div>
+    <div class="projects-grid" id="projetos">
+
+      <!-- my-financer -->
+      <a class="project pt-financer reveal" href="index-my-financer.html" target="_blank" rel="noopener" style="--c1:#10b981;--c2:#8b5cf6;--c3:#6ee7b7;--ink:#34d399;--on:#fff">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">app local</span>
+          <span class="win-status">Local</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="proj-badges"><span class="pb">Glassmorphism</span></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">my-financer</h3>
+          <p class="proj-desc">App completo de finanças pessoais com glassmorphism. Integração com IA para análise de gastos e importação automática via PDF.</p>
+          <div class="proj-tags">
+            <span class="tag">Controle Financeiro</span>
+            <span class="tag">IA Groq</span>
+            <span class="tag">PDF</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Abrir</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- SaburaApp -->
+      <a class="project pt-sabura reveal" href="Sabura index.html" target="_blank" rel="noopener" style="--c1:#0d9488;--c2:#f59e0b;--c3:#38bdf8;--ink:#2dd4bf;--on:#fff">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">app local</span>
+          <span class="win-status">Local</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="proj-badges"><span class="pb">Premium</span></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">SaburaApp</h3>
+          <p class="proj-desc">Gestão premium de clientes e assinaturas com estética editorial. Identidade visual inspirada no azul #023c69 e tons âmbar dourados.</p>
+          <div class="proj-tags">
+            <span class="tag">CRM</span>
+            <span class="tag">Clientes</span>
+            <span class="tag">Assinaturas</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Abrir</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- SNIPER BOT v2.0 -->
+      <a class="project pt-sniper reveal" href="index-sniper-bot.html" target="_blank" rel="noopener" style="--c1:#00ff88;--c2:#00b36b;--c3:#86efac;--ink:#00ff88;--on:#03150c">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">app local</span>
+          <span class="win-status">Local</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5 4 17"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </div>
+          <div class="proj-badges"><span class="pb">Cyberpunk</span></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">SNIPER BOT v2.0</h3>
+          <p class="proj-desc">Bot de sinais e trading automatizado. Estética cyberpunk com terminal animado, grid neon e pipeline de estratégias em tempo real.</p>
+          <div class="proj-tags">
+            <span class="tag">Trading</span>
+            <span class="tag">IQ Option</span>
+            <span class="tag">Auto Bots</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Abrir</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Nay Nails Studio -->
+      <a class="project pt-nay reveal" href="https://nay-nails-landing.vercel.app/" target="_blank" rel="noopener" style="--c1:#E84C8A;--c2:#00C0C0;--c3:#F7A6C4;--ink:#f472b6;--on:#fff">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">nay-nails-landing.vercel.app</span>
+          <span class="win-status live">Ao vivo</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+          </div>
+          <div class="proj-badges"></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">Nay Nails Studio</h3>
+          <p class="proj-desc">Página de apresentação profissional para studio de manicure. Integração com WhatsApp, Google Maps e botões de download do app.</p>
+          <div class="proj-tags">
+            <span class="tag">Landing</span>
+            <span class="tag">Salão de Beleza</span>
+            <span class="tag">Agendamento</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Visitar site</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Análise de Loterias -->
+      <a class="project pt-loteria reveal" href="https://an-lise-de-loterias.vercel.app/" target="_blank" rel="noopener" style="--c1:#6366f1;--c2:#06b6d4;--c3:#a5b4fc;--ink:#a5b4fc;--on:#fff">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">an-lise-de-loterias.vercel.app</span>
+          <span class="win-status live">Ao vivo</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          </div>
+          <div class="proj-badges"></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">Análise de Loterias</h3>
+          <p class="proj-desc">Painel completo de resultados das 4 principais loterias da Caixa. Números sorteados, premiações acumuladas e gerador de jogos.</p>
+          <div class="proj-tags">
+            <span class="tag">Mega-Sena</span>
+            <span class="tag">Quina</span>
+            <span class="tag">Lotofácil</span>
+            <span class="tag">+Milionária</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Visitar site</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Preventivas Elétricas -->
+      <a class="project pt-prev reveal" href="https://preventivas-el-tricas.vercel.app/" target="_blank" rel="noopener" style="--c1:#0ea5e9;--c2:#f97316;--c3:#fdba74;--ink:#38bdf8;--on:#fff">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">preventivas-el-tricas.vercel.app</span>
+          <span class="win-status live">Ao vivo</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div class="proj-badges"></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">Preventivas Elétricas</h3>
+          <p class="proj-desc">App para registro técnico de medições em quadros energizados. 8 disjuntores por registro, soma automática de fases e exportação JSON.</p>
+          <div class="proj-tags">
+            <span class="tag">Medições</span>
+            <span class="tag">Modo Local</span>
+            <span class="tag">Firebase</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Visitar site</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- R3D Print Manager Pro -->
+      <a class="project pt-r3d reveal" href="https://www.r3dprintmanagerpro.com.br/" target="_blank" rel="noopener" style="--c1:#059669;--c2:#ea580c;--c3:#fb923c;--ink:#34d399;--on:#fff">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">r3dprintmanagerpro.com.br</span>
+          <span class="win-status live">Em produção</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <div class="proj-badges"></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">R3D Print Manager Pro</h3>
+          <p class="proj-desc">Sistema ERP completo para gestão profissional de impressão 3D. Propostas em PDF, cálculo de ROI, BI e licenciamento HWID offline.</p>
+          <div class="proj-tags">
+            <span class="tag">ERP Industrial</span>
+            <span class="tag">Impressão 3D</span>
+            <span class="tag">BI · ROI</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Visitar site</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- The Honest Bowl -->
+      <a class="project pt-honest reveal" href="https://the-honest-bowl.vercel.app/" target="_blank" rel="noopener" style="--c1:#10b981;--c2:#f59e0b;--c3:#fcd34d;--ink:#34d399;--on:#fff">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">the-honest-bowl.vercel.app</span>
+          <span class="win-status live">Ao vivo</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          </div>
+          <div class="proj-badges"></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">The Honest Bowl</h3>
+          <p class="proj-desc">Landing page de alta conversão para eBook de 30 receitas caseiras naturais para cães. Checkout via Stripe, calculadora de porções e cronograma de transição.</p>
+          <div class="proj-tags">
+            <span class="tag">E-Book</span>
+            <span class="tag">Nutrição Canina</span>
+            <span class="tag">Receitas Naturais</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Visitar site</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Home Broker IA -->
+      <a class="project pt-homebroker reveal" href="landing-homebroker-ia.html" target="_blank" rel="noopener" style="--c1:#2a78d6;--c2:#eb6834;--c3:#1baf7a;--ink:#60a5fa;--on:#fff">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">app desktop</span>
+          <span class="win-status">Download</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="proj-badges"><span class="pb">Premium</span></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">Home Broker IA</h3>
+          <p class="proj-desc">Dashboard premium de investimentos com IA assistente, portfólio completo, cotações em tempo real, rebalanceamento inteligente e simulador financeiro avançado.</p>
+          <div class="proj-tags">
+            <span class="tag">Investimentos</span>
+            <span class="tag">IA Assistente</span>
+            <span class="tag">Simulador</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Ver detalhes</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- HUB TRAINING -->
+      <a class="project pt-hubtraining reveal" href="https://hub-training-eta.vercel.app/" target="_blank" rel="noopener" style="--c1:#3b82f6;--c2:#10b981;--c3:#34d399;--ink:#60a5fa;--on:#fff">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">hub-training-eta.vercel.app</span>
+          <span class="win-status live">Ao vivo</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div class="proj-badges"></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">HUB TRAINING</h3>
+          <p class="proj-desc">Plataforma completa de treinamento com interface moderna e intuitiva. Desenvolvida para proporcionar a melhor experiência de aprendizado e desenvolvimento.</p>
+          <div class="proj-tags">
+            <span class="tag">Plataforma Web</span>
+            <span class="tag">Treinamento</span>
+            <span class="tag">Moderno</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Visitar site</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Mercado Motta Jaraguá -->
+      <a class="project pt-motta reveal" href="https://motta-jaragua.vercel.app/" target="_blank" rel="noopener" style="--c1:#dc2626;--c2:#f59e0b;--c3:#16a34a;--ink:#f87171;--on:#fff">
+        <div class="win-bar">
+          <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="win-url">motta-jaragua.vercel.app</span>
+          <span class="win-status live">Ao vivo</span>
+        </div>
+        <div class="project-thumb">
+          <div class="proj-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </div>
+          <div class="proj-badges"></div>
+        </div>
+        <div class="project-body">
+          <h3 class="proj-title">Mercado Motta Jaraguá</h3>
+          <p class="proj-desc">Loja virtual completa do Mercado Motta Jaraguá: catálogo, ofertas com vigência, carrinho, checkout e painel administrativo com autenticação e RBAC, persistidos em PostgreSQL.</p>
+          <div class="proj-tags">
+            <span class="tag">E-commerce</span>
+            <span class="tag">Supermercado</span>
+            <span class="tag">Painel Admin</span>
+          </div>
+          <div class="proj-foot">
+            <span class="proj-cta-label">Visitar site</span>
+            <span class="proj-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg></span>
+          </div>
+        </div>
+      </a>
+
+     </div>
+   </div>
+</section>
+
+<!-- TECNOLOGIAS -->
+<section id="tecnologias" style="padding-top:20px">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-tag" style="background:rgba(141,174,208,.1);border-color:rgba(141,174,208,.28);color:#8DAED0">// TECH STACK</div>
+      <h2>Tecnologias que uso para <span>entregar qualidade</span></h2>
+      <p>Cada ferramenta escolhida para performance, manutenibilidade e resultados consistentes.</p>
+    </div>
+    <div class="tech-wrap reveal">
+      <div class="tech">
+        <div class="tech-ic">TS</div>
+        <strong>TypeScript</strong>
+        <small>Tipado · Seguro</small>
+      </div>
+      <div class="tech">
+        <div class="tech-ic">RX</div>
+        <strong>React</strong>
+        <small>UI · SPA</small>
+      </div>
+      <div class="tech">
+        <div class="tech-ic">NW</div>
+        <strong>Node.js</strong>
+        <small>Backend · APIs</small>
+      </div>
+      <div class="tech">
+        <div class="tech-ic">VL</div>
+        <strong>Single-file</strong>
+        <small>HTML · CSS · JS</small>
+      </div>
+      <div class="tech">
+        <div class="tech-ic">FS</div>
+        <strong>Firebase</strong>
+        <small>Real-time · Auth</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUEM SOU EU -->
+<section id="quem-sou-eu" style="padding-top:20px">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-tag">// QUEM SOU EU</div>
+      <h2>O profissional por trás da <span>VELKORA</span></h2>
+      <p>Conheça quem está por trás de cada projeto entregue.</p>
+    </div>
+    <div class="about-wrap">
+      <div class="about-photo reveal">
+        <div class="photo-frame">
+          <img class="photo-img" src="my-face.png" alt="Foto de Rafael Rovati" />
+          <div class="photo-badge">
+            <div class="bp-name">Rafael Rovati</div>
+            <div class="bp-role">DESENVOLVEDOR FULL-STACK</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-text reveal">
+        <div class="about-role">DESENVOLVEDOR FULL-STACK · SOFTWARE ENGINEER · UI/UX</div>
+        <h3>Rafael Rovati</h3>
+        <p>
+          Sou o desenvolvedor e fundador por trás da <strong>VELKORA</strong>. Trabalho com
+          construção de sistemas web completos, do planejamento ao deploy, sempre com foco em
+          <strong>performance, código limpo e experiências que convertem</strong>.
+        </p>
+        <p>
+          Minha atuação combina <strong>engenharia de software</strong> com design de interfaces
+          — para entregar produtos que não apenas funcionam bem, mas também transmitem
+          credibilidade e responsabilidade técnica em cada detalhe.
+        </p>
+        <p>
+          Cada projeto do portfólio foi desenvolvido de forma independente, com atenção a
+          arquitetura, responsividade e resultados consistentes.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding-top:20px">
+  <div class="container">
+    <div class="cta-wrap reveal">
+      <h3>Tem um projeto em mente?<br/><span>Vamos construir algo incrível juntos.</span></h3>
+      <p>Portfólio, landing pages, sistemas personalizados, apps desktop ou mobile. Qual é a sua ideia?</p>
+      <div class="cta-btns">
+        <a href="mailto:contato@rafaelrovati.dev" class="btn-main">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Entrar em Contato
+        </a>
+        <a href="#projetos" class="btn-alt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Explorar Portfólio
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-inner">
+      <div class="foot-brand">
+        <div class="monogram">
+          <svg viewBox="0 0 100 90" width="24" height="22" aria-hidden="true">
+            <polygon points="8,6 32,6 29,24 5,24" fill="#F3F5F8"/>
+            <polygon points="10,30 34,30 37,84 13,84" fill="#344B68"/>
+            <polygon points="50,6 74,6 61,84 37,84" fill="#8DAED0"/>
+          </svg>
+        </div>
+        <div class="foot-brand-text">
+          <span class="foot-name">VELKORA</span>
+          <span class="foot-sub">DIGITAL SYSTEMS</span>
+        </div>
+      </div>
+      <div class="foot-links">
+        <a href="#sobre">Sobre</a>
+        <a href="#projetos">Projetos</a>
+        <a href="#tecnologias">Tecnologias</a>
+        <a href="mailto:contato@rafaelrovati.dev">E-mail</a>
+      </div>
+      <div class="foot-copy">© 2026 VELKORA · Digital Systems · Todos os direitos reservados.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mouse tracking radial nos cards de projeto
+  document.querySelectorAll('.project').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+      card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+    });
+  });
+  // Scroll Reveal
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}
+    });
+  },{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  // Fechar menu mobile ao clicar
+  document.querySelectorAll('#navLinks a').forEach(a=>{
+    a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'));
+  });
+</script>
+</body>
+</html>

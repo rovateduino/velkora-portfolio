@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saburá · Todo sabor tem um endereço</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0D0D0D;
+            color: #F5F0EB;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Gradiente de fundo sutil */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 70% 20%, rgba(201, 168, 76, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 30% 80%, rgba(201, 168, 76, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #C9A84C, #E8C96A);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #0D0D0D;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: #F5F0EB;
+            letter-spacing: 2px;
+        }
+
+        .logo-text span {
+            color: #C9A84C;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(245, 240, 235, 0.6);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links a:hover {
+            color: #C9A84C;
+        }
+
+        .nav-cta {
+            background: transparent;
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            color: #C9A84C;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .nav-cta:hover {
+            background: rgba(201, 168, 76, 0.1);
+            border-color: #C9A84C;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 80px 0 100px;
+            min-height: 80vh;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(201, 168, 76, 0.12);
+            color: #C9A84C;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+            width: fit-content;
+            letter-spacing: 1px;
+            border: 1px solid rgba(201, 168, 76, 0.15);
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(42px, 6vw, 72px);
+            font-weight: 700;
+            line-height: 1.05;
+            color: #F5F0EB;
+        }
+
+        .hero-title .gold {
+            color: #C9A84C;
+            font-style: italic;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            line-height: 1.7;
+            color: rgba(245, 240, 235, 0.7);
+            max-width: 500px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #C9A84C, #E8C96A);
+            color: #0D0D0D;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(201, 168, 76, 0.25);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: #F5F0EB;
+            padding: 16px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 16px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hero-stats-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-stats-item .number {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #C9A84C;
+        }
+
+        .hero-stats-item .label {
+            font-size: 13px;
+            color: rgba(245, 240, 235, 0.5);
+        }
+
+        /* ===== HERO IMAGEM (mockup) ===== */
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .phone-mockup {
+            width: 100%;
+            max-width: 340px;
+            aspect-ratio: 9 / 19;
+            background: linear-gradient(145deg, #1C1C1E, #0D0D0D);
+            border-radius: 36px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            position: relative;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 50% 30%, #1C1C1E, #0D0D0D);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px 16px;
+            position: relative;
+        }
+
+        .phone-status-bar {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 11px;
+            padding: 0 4px 12px;
+        }
+
+        .phone-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .phone-header .app-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: #F5F0EB;
+        }
+        .phone-header .app-name span {
+            color: #C9A84C;
+        }
+        .phone-header .gold-dot {
+            width: 8px;
+            height: 8px;
+            background: #C9A84C;
+            border-radius: 50%;
+        }
+
+        .phone-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .phone-card .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .phone-card .name {
+            color: #F5F0EB;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .phone-card .cuisine {
+            color: #C9A84C;
+            font-size: 12px;
+        }
+        .phone-card .stars {
+            color: #C9A84C;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .phone-card .address {
+            color: rgba(245, 240, 235, 0.4);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .phone-card-small {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .phone-card-small:last-child {
+            border-bottom: none;
+        }
+
+        .phone-card-small .icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(201, 168, 76, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .phone-card-small .info .name {
+            font-size: 13px;
+            color: #F5F0EB;
+        }
+        .phone-card-small .info .desc {
+            font-size: 11px;
+            color: rgba(245, 240, 235, 0.4);
+        }
+
+        .phone-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-around;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .phone-footer span {
+            color: rgba(245, 240, 235, 0.3);
+            font-size: 20px;
+        }
+
+        .phone-footer .active {
+            color: #C9A84C;
+        }
+
+        /* Glow atrás do mockup */
+        .phone-glow {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(ellipse at 50% 40%, rgba(201, 168, 76, 0.08), transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* ===== FEATURES ===== */
+        .features {
+            padding: 80px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .section-header .label {
+            color: #C9A84C;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 4vw, 48px);
+            color: #F5F0EB;
+            margin-top: 8px;
+        }
+
+        .section-header p {
+            color: rgba(245, 240, 235, 0.5);
+            max-width: 500px;
+            margin: 12px auto 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 32px 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-4px);
+            border-color: rgba(201, 168, 76, 0.15);
+        }
+
+        .feature-card .icon {
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            color: #F5F0EB;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: rgba(245, 240, 235, 0.5);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+
+        /* ===== CTA ===== */
+        .cta {
+            padding: 80px 0 100px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .cta h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(28px, 3.5vw, 44px);
+            color: #F5F0EB;
+        }
+
+        .cta h2 .gold {
+            color: #C9A84C;
+        }
+
+        .cta p {
+            color: rgba(245, 240, 235, 0.5);
+            max-width: 460px;
+            margin: 12px auto 32px;
+            font-size: 16px;
+        }
+
+        .cta .btn-primary {
+            font-size: 18px;
+            padding: 18px 48px;
+        }
+
+        .cta .btn-primary .arrow {
+            transition: transform 0.3s;
+        }
+        .cta .btn-primary:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            padding: 32px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer .copy {
+            font-size: 13px;
+            color: rgba(245, 240, 235, 0.3);
+        }
+
+        .footer .socials {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer .socials a {
+            color: rgba(245, 240, 235, 0.3);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer .socials a:hover {
+            color: #C9A84C;
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 40px 0 60px;
+            }
+
+            .hero-content {
+                align-items: center;
+            }
+
+            .hero-subtitle {
+                max-width: 100%;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .phone-mockup {
+                max-width: 260px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .hero-stats {
+                gap: 24px;
+                flex-wrap: wrap;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== NAVBAR ===== -->
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <div class="logo-icon">S</div>
+                <span class="logo-text">Saburá<span>.</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Recursos</a></li>
+                <li><a href="#cta">Download</a></li>
+                <li><a href="#" class="nav-cta">Em breve</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== HERO ===== -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">Disponível em breve</div>
+                <h1 class="hero-title">
+                    Todo sabor<br />
+                    tem um <span class="gold">endereço</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Saburá é o app que reúne os melhores restaurantes de São Paulo.
+                    Descubra, avalie e compartilhe experiências gastronômicas com
+                    quem você ama.
+                </p>
+                <div class="hero-actions">
+                    <a href="#cta" class="btn-primary">
+                        📲 Quero saber mais
+                    </a>
+                    <a href="#features" class="btn-secondary">
+                        Ver recursos ↓
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stats-item">
+                        <span class="number">500+</span>
+                        <span class="label">Restaurantes</span>
+                    </div>
+                    <div class="hero-stats-item">
+                        <span class="number">4.8★</span>
+                        <span class="label">Avaliação média</span>
+                    </div>
+                    <div class="hero-stats-item">
+                        <span class="number">10k+</span>
+                        <span class="label">Usuários</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="phone-glow"></div>
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <!-- Status Bar -->
+                        <div class="phone-status-bar">
+                            <span>9:41</span>
+                            <span>📶 🔋</span>
+                        </div>
+
+                        <!-- Header -->
+                        <div class="phone-header">
+                            <span class="app-name">Saburá<span>.</span></span>
+                            <span class="gold-dot"></span>
+                        </div>
+
+                        <!-- Card principal -->
+                        <div class="phone-card">
+                            <div class="row">
+                                <span class="name">Sakura House</span>
+                                <span class="cuisine">🍣 Japonesa</span>
+                            </div>
+                            <div class="stars">★★★★★ 4.8</div>
+                            <div class="address">Rua da Consolação, 2000</div>
+                        </div>
+
+                        <!-- Lista de restaurantes (mock) -->
+                        <div class="phone-card-small">
+                            <span class="icon">🍜</span>
+                            <div class="info">
+                                <div class="name">Izumi Sushi Bar</div>
+                                <div class="desc">⭐ 4.5 · 200m</div>
+                            </div>
+                        </div>
+                        <div class="phone-card-small">
+                            <span class="icon">🥩</span>
+                            <div class="info">
+                                <div class="name">Fogo de Chão</div>
+                                <div class="desc">⭐ 4.9 · 350m</div>
+                            </div>
+                        </div>
+                        <div class="phone-card-small">
+                            <span class="icon">🧀</span>
+                            <div class="info">
+                                <div class="name">Trem Bão</div>
+                                <div class="desc">⭐ 4.6 · 500m</div>
+                            </div>
+                        </div>
+
+                        <!-- Footer (bottom tabs) -->
+                        <div class="phone-footer">
+                            <span>🏠</span>
+                            <span class="active">🔍</span>
+                            <span>🗺️</span>
+                            <span>👤</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FEATURES ===== -->
+        <section id="features" class="features">
+            <div class="section-header">
+                <div class="label">✦ Por que Saburá</div>
+                <h2>Descubra o sabor da cidade</h2>
+                <p>Tudo o que você precisa para explorar a gastronomia paulistana.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">📍</div>
+                    <h3>Mapa interativo</h3>
+                    <p>Encontre restaurantes próximos com precisão, usando o mapa integrado com Leaflet/OSM.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🤖</div>
+                    <h3>Recomendações com IA</h3>
+                    <p>Nossa IA sugere pratos e restaurantes baseados no seu gosto e no momento do dia.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🏆</div>
+                    <h3>Gamificação</h3>
+                    <p>Ganhe XP, suba de nível e desbloqueie badges a cada check-in e avaliação.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📸</div>
+                    <h3>Comunidade</h3>
+                    <p>Compartilhe fotos dos pratos e veja o que outros foodies estão experimentando.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CTA ===== -->
+        <section id="cta" class="cta">
+            <h2>
+                Pronto para <span class="gold">saborear</span>?
+            </h2>
+            <p>
+                Em breve, Saburá estará disponível para Android e iOS.
+                Deixe seu e-mail para ser avisado quando lançarmos!
+            </p>
+            <a href="#" class="btn-primary">
+                📲 Quero ser avisado
+                <span class="arrow">→</span>
+            </a>
+        </section>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="footer">
+            <span class="copy">© 2026 Saburá · Todo sabor tem um endereço.</span>
+            <div class="socials">
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+                <a href="#">GitHub</a>
+            </div>
+        </footer>
+
+    </div>
+
+</body>
+</html>

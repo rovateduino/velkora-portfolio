@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Honest Bowl — Natural Dog Food 30-Recipe Suite</title>
+<meta name="description" content="Transform your dog's coat, gut health and energy with 30 vet-aligned natural home-cooked recipes. Includes 14-day safe transition schedule + downloadable Excel portion calculator." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',sans-serif;
+    background:#031a10;
+    color:#e2e8f0;
+    overflow-x:hidden;line-height:1.6;
+    min-height:100vh;
+  }
+  .bg-mesh{
+    position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(16,185,129,0.18), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 20%, rgba(245,158,11,0.14), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 50% 110%, rgba(5,150,105,0.16), transparent 60%);
+  }
+  .bg-grid{
+    position:fixed;inset:0;z-index:-1;opacity:.2;
+    background-image:
+      linear-gradient(rgba(148,163,184,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148,163,184,0.05) 1px, transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);
+    -webkit-mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);
+  }
+  .noise::before{
+    content:"";position:fixed;inset:0;z-index:-1;opacity:.03;pointer-events:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
+  }
+  .container{max-width:1100px;margin:0 auto;padding:0 24px}
+
+  /* NAVBAR */
+  nav{
+    position:sticky;top:0;z-index:100;
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    background:rgba(3,26,16,0.75);
+    border-bottom:1px solid rgba(148,163,184,0.08);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+  .brand{display:flex;align-items:center;gap:12px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.15rem;color:#f8fafc;letter-spacing:-0.01em;text-decoration:none}
+  .brand-icon{
+    width:40px;height:40px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#10b981 0%,#f59e0b 100%);
+    box-shadow:0 8px 24px rgba(16,185,129,.3);
+    font-size:1.3rem;
+  }
+  .brand span{color:#34d399}
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links a{color:#94a3b8;text-decoration:none;font-weight:500;font-size:.9rem;transition:.2s}
+  .nav-links a:hover{color:#34d399}
+  .nav-cta{
+    padding:10px 20px;border-radius:11px;
+    background:linear-gradient(135deg,#10b981,#f59e0b);
+    color:#fff !important;font-weight:700;font-size:.85rem;
+    box-shadow:0 6px 22px rgba(16,185,129,.3);
+    transition:.2s;
+  }
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(245,158,11,.35)}
+  .hamburger{display:none;background:none;border:none;color:#f8fafc;cursor:pointer}
+
+  /* HERO */
+  .hero{padding:100px 0 80px;text-align:center;position:relative}
+  .hero-chip{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 18px;border-radius:999px;margin-bottom:30px;
+    background:rgba(16,185,129,0.08);
+    border:1px solid rgba(52,211,153,0.25);
+    font-family:'Space Grotesk',monospace;font-size:.78rem;font-weight:600;
+    color:#34d399;letter-spacing:.04em;
+  }
+  .hero-chip::before{
+    content:"";width:8px;height:8px;border-radius:50%;background:#34d399;
+    animation:pulse 1.8s ease-in-out infinite;box-shadow:0 0 0 0 rgba(52,211,153,.45);
+  }
+  @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,.45)}50%{opacity:.5;box-shadow:0 0 0 10px rgba(52,211,153,0)}}
+  .hero-icon{
+    width:140px;height:140px;border-radius:50%;margin:0 auto 28px;position:relative;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#10b981,#059669 50%,#f59e0b);
+    padding:4px;
+    box-shadow:0 24px 60px rgba(16,185,129,.3),0 0 0 1px rgba(52,211,153,.2);
+    animation:glow 4s ease-in-out infinite;
+  }
+  @keyframes glow{0%,100%{box-shadow:0 24px 60px rgba(16,185,129,.3),0 0 0 1px rgba(52,211,153,.2)}50%{box-shadow:0 24px 80px rgba(245,158,11,.35),0 0 0 1px rgba(251,191,36,.25)}}
+  .hero-icon-inner{
+    width:100%;height:100%;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.15),transparent 55%),linear-gradient(135deg,#052e1c,#031a10);
+    display:flex;align-items:center;justify-content:center;
+    font-size:3.2rem;
+  }
+  .hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(2.2rem,5vw,3.6rem);
+    font-weight:700;line-height:1.1;letter-spacing:-.025em;
+    color:#f8fafc;margin-bottom:18px;
+  }
+  .hero h1 .nm{
+    display:block;margin-top:8px;
+    background:linear-gradient(135deg,#34d399 0%,#fbbf24 50%,#f97316 100%);
+    background-size:200% 200%;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    animation:gradient 8s ease infinite;
+  }
+  @keyframes gradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero-role{
+    font-family:'Space Grotesk',monospace;font-size:.9rem;font-weight:600;
+    color:#94a3b8;margin-bottom:24px;letter-spacing:.04em;
+    display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+  }
+  .hero-role .dot{width:5px;height:5px;border-radius:50%;background:#64748b}
+  .hero-lead{
+    font-size:1.1rem;color:#cbd5e1;max-width:680px;margin:0 auto 40px;line-height:1.75;
+  }
+  .hero-cta{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:16px 36px;border-radius:14px;
+    background:linear-gradient(135deg,#10b981,#f59e0b);
+    color:#fff;font-weight:700;font-size:1rem;text-decoration:none;
+    box-shadow:0 12px 36px rgba(16,185,129,.4);
+    transition:.3s;
+  }
+  .hero-cta:hover{transform:translateY(-4px);box-shadow:0 18px 50px rgba(245,158,11,.45)}
+  .hero-cta svg{width:20px;height:20px}
+
+  /* STATS */
+  .hero-stats{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:760px;margin:50px auto 0;
+  }
+  .mini-stat{
+    padding:20px 14px;border-radius:16px;text-align:center;
+    background:rgba(5,30,18,.6);
+    border:1px solid rgba(148,163,184,.08);
+    backdrop-filter:blur(8px);
+    transition:.3s;
+  }
+  .mini-stat:hover{transform:translateY(-4px);border-color:rgba(52,211,153,.25)}
+  .mini-stat .num{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.8rem;line-height:1;
+    background:linear-gradient(135deg,#34d399,#10b981);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;
+  }
+  .mini-stat:nth-child(2) .num{background:linear-gradient(135deg,#fbbf24,#f97316);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .mini-stat:nth-child(3) .num{background:linear-gradient(135deg,#38bdf8,#0ea5e9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .mini-stat:nth-child(4) .num{background:linear-gradient(135deg,#a78bfa,#8b5cf6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .mini-stat .lbl{font-size:.75rem;color:#64748b;font-weight:500;letter-spacing:.04em;text-transform:uppercase;font-family:'Space Grotesk',monospace}
+
+  /* SECTION HEADERS */
+  section{padding:90px 0;position:relative}
+  .section-head{text-align:center;margin-bottom:56px}
+  .section-tag{
+    display:inline-block;padding:6px 14px;border-radius:999px;margin-bottom:16px;
+    background:rgba(16,185,129,.08);border:1px solid rgba(52,211,153,.22);
+    font-family:'Space Grotesk',monospace;font-size:.72rem;font-weight:700;
+    color:#34d399;letter-spacing:.06em;
+  }
+  .section-head h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(1.8rem,3.8vw,2.5rem);
+    font-weight:700;line-height:1.15;color:#f8fafc;margin-bottom:14px;letter-spacing:-.02em;
+  }
+  .section-head h2 span{
+    background:linear-gradient(135deg,#34d399,#fbbf24 60%,#f97316);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .section-head p{font-size:1.02rem;color:#94a3b8;max-width:620px;margin:0 auto;line-height:1.75}
+
+  /* FEATURES */
+  .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .feature{
+    padding:32px 28px;border-radius:20px;position:relative;
+    background:linear-gradient(160deg,rgba(5,30,18,.7),rgba(3,26,16,.9));
+    border:1px solid rgba(148,163,184,.08);
+    transition:.4s cubic-bezier(.4,0,.2,1);
+  }
+  .feature:hover{transform:translateY(-8px);border-color:rgba(52,211,153,.25);box-shadow:0 30px 60px -20px rgba(16,185,129,.2)}
+  .feat-icon{
+    width:56px;height:56px;border-radius:16px;margin-bottom:20px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;
+  }
+  .feature:nth-child(1) .feat-icon{background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(52,211,153,.1))}
+  .feature:nth-child(2) .feat-icon{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(251,191,36,.1))}
+  .feature:nth-child(3) .feat-icon{background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(56,189,248,.1))}
+  .feature:nth-child(4) .feat-icon{background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(167,139,250,.1))}
+  .feature:nth-child(5) .feat-icon{background:linear-gradient(135deg,rgba(236,72,153,.2),rgba(244,114,182,.1))}
+  .feature:nth-child(6) .feat-icon{background:linear-gradient(135deg,rgba(20,184,166,.2),rgba(45,212,191,.1))}
+  .feature h3{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.15rem;color:#f8fafc;
+    margin-bottom:10px;letter-spacing:-.01em;
+  }
+  .feature p{font-size:.92rem;color:#94a3b8;line-height:1.7}
+
+  /* WHAT'S INSIDE */
+  .inside-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:800px;margin:0 auto}
+  .inside-item{
+    padding:28px 24px;border-radius:16px;
+    background:rgba(5,30,18,.6);
+    border:1px solid rgba(148,163,184,.07);
+    display:flex;align-items:flex-start;gap:16px;
+    transition:.3s;
+  }
+  .inside-item:hover{border-color:rgba(52,211,153,.2);transform:translateY(-3px)}
+  .inside-num{
+    min-width:44px;height:44px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#10b981,#059669);
+    color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;
+  }
+  .inside-item h4{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:#f8fafc;margin-bottom:4px}
+  .inside-item p{font-size:.85rem;color:#94a3b8;line-height:1.6}
+
+  /* TESTIMONIAL */
+  .testimonial{
+    max-width:700px;margin:0 auto;padding:40px 36px;border-radius:24px;text-align:center;
+    background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(245,158,11,.05));
+    border:1px solid rgba(52,211,153,.15);
+    position:relative;
+  }
+  .testimonial::before{content:"\201C";font-size:5rem;color:rgba(52,211,153,.15);position:absolute;top:-10px;left:24px;font-family:serif;line-height:1}
+  .testimonial p{font-size:1.05rem;color:#cbd5e1;line-height:1.8;font-style:italic;margin-bottom:20px;position:relative;z-index:1}
+  .testimonial .author{font-family:'Space Grotesk',sans-serif;font-weight:600;color:#34d399;font-size:.9rem}
+
+  /* CTA */
+  .cta-wrap{
+    padding:64px 50px;border-radius:26px;text-align:center;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(245,158,11,.08),rgba(3,26,16,1));
+    border:1px solid rgba(52,211,153,.2);
+  }
+  .cta-wrap::before{
+    content:"";position:absolute;inset:0;z-index:-1;
+    background:
+      radial-gradient(circle at 20% 20%,rgba(16,185,129,.3),transparent 45%),
+      radial-gradient(circle at 80% 80%,rgba(245,158,11,.25),transparent 45%);
+  }
+  .cta-wrap h3{
+    font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,3.2vw,2.2rem);
+    font-weight:700;color:#f8fafc;margin-bottom:14px;letter-spacing:-.02em;line-height:1.25;
+  }
+  .cta-wrap h3 span{background:linear-gradient(135deg,#34d399,#fbbf24);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .cta-wrap p{color:#cbd5e1;font-size:1rem;max-width:540px;margin:0 auto 28px;line-height:1.75}
+  .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn-main{
+    padding:14px 28px;border-radius:12px;
+    background:linear-gradient(135deg,#10b981,#f59e0b);color:#fff;
+    font-weight:700;font-size:.95rem;text-decoration:none;
+    display:inline-flex;align-items:center;gap:10px;
+    box-shadow:0 10px 32px rgba(16,185,129,.4);
+    transition:.2s;
+  }
+  .btn-main:hover{transform:translateY(-3px);box-shadow:0 14px 42px rgba(245,158,11,.45)}
+  .btn-main svg{width:18px;height:18px}
+  .btn-alt{
+    padding:14px 28px;border-radius:12px;
+    background:rgba(5,30,18,.6);color:#f1f5f9;
+    font-weight:600;font-size:.95rem;text-decoration:none;
+    display:inline-flex;align-items:center;gap:10px;
+    border:1px solid rgba(148,163,184,.15);
+    transition:.2s;
+  }
+  .btn-alt:hover{background:rgba(5,40,25,.8);border-color:rgba(52,211,153,.3)}
+
+  /* FOOTER */
+  footer{padding:50px 0 30px;border-top:1px solid rgba(148,163,184,.06);margin-top:40px}
+  .foot-inner{display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center}
+  .foot-brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;color:#f8fafc}
+  .foot-brand .monogram{
+    width:36px;height:36px;border-radius:10px;
+    background:linear-gradient(135deg,#10b981 0%,#f59e0b 100%);
+    display:flex;align-items:center;justify-content:center;font-size:.9rem;
+  }
+  .foot-brand span{color:#34d399}
+  .foot-links{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+  .foot-links a{color:#64748b;text-decoration:none;font-size:.85rem;font-weight:500;transition:.2s}
+  .foot-links a:hover{color:#34d399}
+  .foot-copy{color:#475569;font-size:.78rem;font-family:'Space Grotesk',monospace;letter-spacing:.03em}
+
+  /* REVEAL */
+  .reveal{opacity:0;transform:translateY(30px);transition:.75s cubic-bezier(.4,0,.2,1)}
+  .reveal.on{opacity:1;transform:translateY(0)}
+
+  /* RESPONSIVE */
+  @media(max-width:980px){
+    .hero{padding:70px 0 60px}
+    .nav-links{display:none}
+    .hamburger{display:block}
+    .nav-links.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:rgba(3,26,16,.98);padding:22px 24px;border-bottom:1px solid rgba(148,163,184,.08);gap:16px;z-index:99}
+    .features-grid{grid-template-columns:repeat(2,1fr)}
+    .hero-stats{grid-template-columns:repeat(2,1fr)}
+    section{padding:70px 0}
+    .cta-wrap{padding:44px 28px}
+  }
+  @media(max-width:680px){
+    .features-grid,.inside-grid{grid-template-columns:1fr}
+    .hero-stats{grid-template-columns:repeat(2,1fr)}
+    .hero-icon{width:110px;height:110px}
+    .hero-icon-inner{font-size:2.5rem}
+    .cta-wrap{padding:36px 22px}
+    .cta-btns{flex-direction:column;align-items:stretch}
+    .btn-main,.btn-alt{justify-content:center}
+  }
+</style>
+</head>
+<body class="noise">
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="container nav-inner">
+    <a href="#top" class="brand">
+      <div class="brand-icon">🐾</div>
+      The Honest <span>Bowl</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#whats-inside">What's Inside</a>
+      <a href="#reviews">Reviews</a>
+      <a href="https://the-honest-bowl.vercel.app/" target="_blank" rel="noopener" class="nav-cta">Visit Live Site</a>
+    </div>
+    <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="container">
+    <div class="hero-chip reveal">CANADIAN EDITION · $27 CAD</div>
+    <div class="hero-icon reveal">
+      <div class="hero-icon-inner">🐕</div>
+    </div>
+    <div class="reveal">
+      <h1>
+        Transform your dog's health
+        <span class="nm">with 30 natural recipes</span>
+      </h1>
+    </div>
+    <div class="hero-role reveal">
+      <span>VET-ALIGNED</span>
+      <span class="dot"></span>
+      <span>100% NATURAL</span>
+      <span class="dot"></span>
+      <span>MADE IN CANADA</span>
+    </div>
+    <p class="hero-lead reveal">
+      30 quick, healthy home-cooked dog food recipes designed by pet nutrition experts. Includes a 14-day safe transition schedule from kibble to natural + a downloadable Excel portion calculator.
+    </p>
+    <a href="https://the-honest-bowl.vercel.app/" target="_blank" rel="noopener" class="hero-cta reveal">
+      Get The Honest Bowl
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+    <div class="hero-stats reveal">
+      <div class="mini-stat">
+        <div class="num">30</div>
+        <div class="lbl">Recipes</div>
+      </div>
+      <div class="mini-stat">
+        <div class="num">14</div>
+        <div class="lbl">Day Plan</div>
+      </div>
+      <div class="mini-stat">
+        <div class="num">100%</div>
+        <div class="lbl">Natural</div>
+      </div>
+      <div class="mini-stat">
+        <div class="num">$27</div>
+        <div class="lbl">CAD</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-tag">// WHY THE HONEST BOWL</div>
+      <h2>Everything your dog needs for <span>a healthier life</span></h2>
+      <p>Science-backed nutrition meets simple, home-cooked meals your dog will love.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature reveal">
+        <div class="feat-icon">🍖</div>
+        <h3>30 Vet-Aligned Recipes</h3>
+        <p>Every recipe is formulated to meet AAFCO nutritional standards with balanced macros for optimal canine health.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feat-icon">📋</div>
+        <h3>14-Day Transition Schedule</h3>
+        <p>Safe, gradual shift from kibble to natural food. Day-by-day instructions with portion adjustments to avoid digestive upset.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feat-icon">📊</div>
+        <h3>Excel Portion Calculator</h3>
+        <p>Input your dog's weight, age, and activity level. Get precise daily portions with automatic macro distribution.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feat-icon">🛡️</div>
+        <h3>Safety Poster & Checklist</h3>
+        <p>Visual guide to toxic foods, safe ingredients, and emergency protocols. Print it and stick it on your fridge.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feat-icon">💚</div>
+        <h3>Therapeutic Guide</h3>
+        <p>Special recipes for dogs with allergies, sensitivities, joint issues, and digestive problems.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feat-icon">⚡</div>
+        <h3>Quick & Easy Prep</h3>
+        <p>All recipes take under 30 minutes. Simple ingredients from your local grocery store. No exotic supplements needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S INSIDE -->
+<section id="whats-inside" style="padding-top:30px">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-tag" style="background:rgba(245,158,11,.08);border-color:rgba(251,191,36,.22);color:#fbbf24">// WHAT'S INSIDE</div>
+      <h2>A complete suite for <span>your dog's nutrition</span></h2>
+      <p>More than just recipes — a full system to transition and maintain your dog on natural food.</p>
+    </div>
+    <div class="inside-grid reveal">
+      <div class="inside-item">
+        <div class="inside-num">01</div>
+        <div>
+          <h4>30 Home-Cooked Recipes</h4>
+          <p>Beef, chicken, turkey, fish, and vegetarian options with complete nutritional breakdowns.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <div class="inside-num" style="background:linear-gradient(135deg,#f59e0b,#d97706)">02</div>
+        <div>
+          <h4>14-Day Transition Plan</h4>
+          <p>Day-by-day schedule from kibble to fully natural. Includes portion ratios for each phase.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <div class="inside-num" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">03</div>
+        <div>
+          <h4>Portion Calculator (Excel)</h4>
+          <p>Paste your dog's data. Get daily calories, protein, fat, and carb targets instantly.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <div class="inside-num" style="background:linear-gradient(135deg,#a855f7,#7c3aed)">04</div>
+        <div>
+          <h4>Therapeutic Recipe Guide</h4>
+          <p>Targeted nutrition for allergies, joint pain, sensitive stomachs, and weight management.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <div class="inside-num" style="background:linear-gradient(135deg,#ec4899,#be185d)">05</div>
+        <div>
+          <h4>Safety Checklist & Poster</h4>
+          <p>Printable reference for toxic foods, safe ingredients, and portion red flags.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <div class="inside-num" style="background:linear-gradient(135deg,#14b8a6,#0d9488)">06</div>
+        <div>
+          <h4>Companion eBook Guide</h4>
+          <p>Deep dive into canine nutrition science, ingredient sourcing, and meal prep strategies.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section id="reviews" style="padding-top:20px">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-tag" style="background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.22);color:#a78bfa">// TESTIMONIALS</div>
+      <h2>What dog parents <span>are saying</span></h2>
+    </div>
+    <div class="testimonial reveal">
+      <p>My golden retriever's coat has never been shinier. The transition schedule made it so easy — no upset stomach at all. The portion calculator alone is worth the price.</p>
+      <div class="author">— Sarah M., Ontario, Canada</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding-top:20px">
+  <div class="container">
+    <div class="cta-wrap reveal">
+      <h3>Ready to transform your dog's health?<br/><span>Start with 30 natural recipes today.</span></h3>
+      <p>Join thousands of Canadian dog parents who've made the switch to fresh, home-cooked nutrition.</p>
+      <div class="cta-btns">
+        <a href="https://the-honest-bowl.vercel.app/" target="_blank" rel="noopener" class="btn-main">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Get The Honest Bowl — $27 CAD
+        </a>
+        <a href="https://the-honest-bowl.vercel.app/" target="_blank" rel="noopener" class="btn-alt">
+          Visit Live Site →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-inner">
+      <div class="foot-brand">
+        <div class="monogram">🐾</div>
+        The Honest <span>Bowl</span>
+      </div>
+      <div class="foot-links">
+        <a href="#features">Features</a>
+        <a href="#whats-inside">What's Inside</a>
+        <a href="#reviews">Reviews</a>
+        <a href="https://the-honest-bowl.vercel.app/" target="_blank" rel="noopener">Live Site</a>
+      </div>
+      <div class="foot-copy">&copy; 2026 The Honest Bowl · Natural Dog Food Nutrition · All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.feature,.inside-item,.testimonial').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+      card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+    });
+  });
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}
+    });
+  },{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  document.querySelectorAll('#navLinks a').forEach(a=>{
+    a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'));
+  });
+</script>
+</body>
+</html>

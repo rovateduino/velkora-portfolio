@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNIPER BOT v2.0 — Trading Automatizado de Alta Precisão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg-0: #05070f;
+    --bg-1: #0a0e1c;
+    --bg-2: #0f1527;
+    --green: #00ff88;
+    --green-dim: #00cc6a;
+    --green-glow: rgba(0, 255, 136, 0.4);
+    --red: #ff3366;
+    --red-dim: #cc2952;
+    --cyan: #00e5ff;
+    --cyan-glow: rgba(0, 229, 255, 0.35);
+    --yellow: #ffd000;
+    --text: #e6f0ff;
+    --text-dim: #8892b0;
+    --text-faint: #4a5575;
+    --border: rgba(0, 229, 255, 0.12);
+    --border-bright: rgba(0, 255, 136, 0.25);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg-0);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.65;
+    font-weight: 500;
+  }
+  .bg-grid {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -2;
+    background-image:
+      linear-gradient(rgba(0, 229, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 100%);
+  }
+  .bg-orb {
+    position: fixed;
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .orb-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0, 255, 136, 0.22), transparent 70%);
+    top: -250px; right: -150px;
+    animation: orbDrift 20s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.2), transparent 70%);
+    bottom: -200px; left: -150px;
+    animation: orbDrift 25s ease-in-out infinite reverse;
+  }
+  .orb-3 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255, 51, 102, 0.12), transparent 70%);
+    top: 40%; left: 45%;
+    animation: orbDrift 30s ease-in-out infinite;
+  }
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 18px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(20px);
+    background: rgba(5, 7, 15, 0.65);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text);
+  }
+  .logo-brackets { color: var(--cyan); font-weight: 700; }
+  .logo-text {
+    background: linear-gradient(90deg, var(--green) 0%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo .version {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(0, 255, 136, 0.08);
+    border: 1px solid var(--border-bright);
+    color: var(--green);
+    font-weight: 600;
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.98rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.25s;
+    position: relative;
+  }
+  .nav-links a::before {
+    content: '>';
+    position: absolute;
+    left: -14px;
+    color: var(--green);
+    opacity: 0;
+    transition: all 0.25s;
+    transform: translateX(-6px);
+  }
+  .nav-links a:hover {
+    color: var(--green);
+    text-shadow: 0 0 18px var(--green-glow);
+  }
+  .nav-links a:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .btn-nav {
+    font-family: 'JetBrains Mono', monospace;
+    padding: 10px 24px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.12), rgba(0, 229, 255, 0.12));
+    border: 1px solid var(--border-bright);
+    color: var(--green);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .btn-nav:hover {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.22), rgba(0, 229, 255, 0.22));
+    box-shadow: 0 0 30px var(--green-glow);
+    transform: translateY(-2px);
+  }
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 130px 6% 70px;
+    position: relative;
+  }
+  .hero-content {
+    max-width: 1050px;
+    text-align: center;
+    position: relative;
+  }
+  .status-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    border-radius: 50px;
+    background: rgba(0, 255, 136, 0.05);
+    border: 1px solid var(--border-bright);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--green);
+    margin-bottom: 30px;
+    animation: fadeInUp 0.6s ease-out;
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .hero h1 {
+    font-size: clamp(2.8rem, 7vw, 5.8rem);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin-bottom: 26px;
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+  }
+  .hero h1 .line-1 {
+    display: block;
+    background: linear-gradient(180deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 .line-2 {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    background: linear-gradient(90deg, var(--green) 0%, var(--cyan) 50%, var(--green) 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+    text-shadow: 0 0 80px rgba(0, 255, 136, 0.2);
+  }
+  .hero p {
+    font-size: clamp(1rem, 1.8vw, 1.22rem);
+    color: var(--text-dim);
+    max-width: 680px;
+    margin: 0 auto 44px;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.6s ease-out 0.3s both;
+  }
+  .btn-primary {
+    font-family: 'JetBrains Mono', monospace;
+    padding: 20px 46px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--green) 0%, var(--cyan) 100%);
+    color: var(--bg-0);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow:
+      0 0 0 1px rgba(0, 255, 136, 0.4) inset,
+      0 12px 40px rgba(0, 255, 136, 0.25),
+      0 0 60px rgba(0, 255, 136, 0.12);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow:
+      0 0 0 1px rgba(0, 255, 136, 0.6) inset,
+      0 24px 60px rgba(0, 255, 136, 0.35),
+      0 0 100px rgba(0, 229, 255, 0.2);
+  }
+  .btn-primary:hover::before { transform: translateX(100%); }
+  .btn-secondary {
+    font-family: 'JetBrains Mono', monospace;
+    padding: 20px 38px;
+    border-radius: 12px;
+    background: rgba(15, 21, 39, 0.5);
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.98rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn-secondary:hover {
+    border-color: var(--cyan);
+    background: rgba(0, 229, 255, 0.06);
+    box-shadow: 0 0 30px var(--cyan-glow);
+    transform: translateY(-4px);
+  }
+  .hero-terminal {
+    max-width: 820px;
+    margin: 70px auto 0;
+    text-align: left;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+  }
+  .terminal {
+    background: linear-gradient(180deg, rgba(10, 14, 28, 0.9), rgba(5, 7, 15, 0.95));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(0, 229, 255, 0.05) inset;
+    backdrop-filter: blur(20px);
+  }
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: rgba(15, 21, 39, 0.6);
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-dots { display: flex; gap: 8px; }
+  .t-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .t-dot.r { background: var(--red); }
+  .t-dot.y { background: var(--yellow); }
+  .t-dot.g { background: var(--green); }
+  .terminal-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+  }
+  .terminal-body {
+    padding: 22px 26px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.9;
+  }
+  .t-line { opacity: 0; animation: typeLine 0.3s linear forwards; }
+  .t-1 { animation-delay: 0.7s; }
+  .t-2 { animation-delay: 1s; }
+  .t-3 { animation-delay: 1.3s; }
+  .t-4 { animation-delay: 1.6s; }
+  .t-5 { animation-delay: 1.9s; }
+  .t-6 { animation-delay: 2.2s; }
+  .t-prompt { color: var(--green); }
+  .t-cmd { color: var(--cyan); }
+  .t-comment { color: var(--text-faint); }
+  .t-ok { color: var(--green); }
+  .t-win { color: var(--green); font-weight: 600; }
+  .t-loss { color: var(--red); font-weight: 600; }
+  .t-metric { color: var(--yellow); }
+  .t-val { color: var(--text); }
+  .t-bar {
+    display: inline-block;
+    width: 160px;
+    height: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-left: 8px;
+  }
+  .t-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    border-radius: 4px;
+    width: 0%;
+    animation: fillBar 1.5s ease-out 2.4s forwards;
+  }
+  section.features {
+    padding: 110px 6%;
+    position: relative;
+  }
+  .section-head {
+    text-align: center;
+    margin-bottom: 70px;
+  }
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    display: inline-block;
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: var(--cyan);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .section-head h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+  .section-head h2 .grad {
+    background: linear-gradient(135deg, var(--green), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .section-head p {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 22px;
+    max-width: 1350px;
+    margin: 0 auto;
+  }
+  .f-card {
+    background: linear-gradient(180deg, rgba(15, 21, 39, 0.55), rgba(10, 14, 28, 0.75));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px 28px;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+  .f-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,0%), rgba(0, 229, 255, 0.08), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .f-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green), var(--cyan), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .f-card:hover {
+    border-color: rgba(0, 255, 136, 0.3);
+    transform: translateY(-10px);
+    box-shadow:
+      0 30px 60px rgba(0, 0, 0, 0.4),
+      0 0 40px rgba(0, 255, 136, 0.06);
+  }
+  .f-card:hover::before, .f-card:hover::after { opacity: 1; }
+  .f-icon {
+    width: 58px; height: 58px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.12), rgba(0, 229, 255, 0.12));
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 22px;
+    position: relative;
+    z-index: 1;
+  }
+  .f-card h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 12px;
+    color: var(--text);
+    position: relative;
+    z-index: 1;
+  }
+  .f-card p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+  .stats-band {
+    padding: 90px 6%;
+    position: relative;
+  }
+  .stats-wrap {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .s-card {
+    padding: 36px 28px;
+    background: rgba(10, 14, 28, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: all 0.35s;
+  }
+  .s-card:hover {
+    border-color: rgba(0, 255, 136, 0.25);
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.08);
+    transform: translateY(-5px);
+  }
+  .s-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--green), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  .s-label {
+    color: var(--text-dim);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.92rem;
+  }
+  .section-strat {
+    padding: 100px 6%;
+    position: relative;
+  }
+  .pipeline {
+    max-width: 1200px;
+    margin: 50px auto 0;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .pipe-step {
+    flex: 1;
+    min-width: 160px;
+    padding: 26px 20px;
+    background: rgba(10, 14, 28, 0.5);
+    border: 1px solid var(--border);
+    position: relative;
+    text-align: center;
+  }
+  .pipe-step:first-child { border-radius: 14px 0 0 14px; }
+  .pipe-step:last-child { border-radius: 0 14px 14px 0; }
+  .pipe-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--green);
+    font-size: 1.6rem;
+    font-weight: 700;
+    z-index: 2;
+    text-shadow: 0 0 12px var(--green-glow);
+  }
+  .pipe-idx {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--cyan);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .pipe-name {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+  }
+  .pipe-desc {
+    font-size: 0.85rem;
+    color: var(--text-faint);
+  }
+  .cta-section {
+    padding: 130px 6%;
+    position: relative;
+  }
+  .cta-box {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 80px 60px;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.06), rgba(0, 229, 255, 0.08));
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0, 255, 136, 0.14), transparent 70%);
+    top: -300px; left: 50%;
+    transform: translateX(-50%);
+  }
+  .cta-box h2 {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .cta-box h2 .grad {
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cta-box p {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 46px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+  }
+  .btn-big {
+    font-family: 'JetBrains Mono', monospace;
+    position: relative;
+    padding: 24px 60px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--green) 0%, var(--cyan) 100%);
+    color: var(--bg-0);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow:
+      0 0 0 1px rgba(0, 255, 136, 0.5) inset,
+      0 20px 60px rgba(0, 255, 136, 0.3);
+  }
+  .btn-big:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow:
+      0 0 0 1px rgba(0, 255, 136, 0.7) inset,
+      0 32px 80px rgba(0, 255, 136, 0.45);
+  }
+  footer {
+    padding: 44px 6%;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+  }
+  footer .f-brand {
+    color: var(--text-dim);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(35px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  @keyframes shimmer {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+  @keyframes orbDrift {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(40px, -30px); }
+    66% { transform: translate(-30px, 25px); }
+  }
+  @keyframes typeLine {
+    to { opacity: 1; }
+  }
+  @keyframes fillBar {
+    to { width: 78%; }
+  }
+  @media (max-width: 968px) {
+    .nav-links { display: none; }
+    .stats-wrap { grid-template-columns: repeat(2, 1fr); }
+    .pipeline { flex-direction: column; gap: 14px; }
+    .pipe-step { border-radius: 12px !important; }
+    .pipe-step:not(:last-child)::after {
+      right: 50%;
+      top: auto;
+      bottom: -20px;
+      transform: translateX(50%) rotate(90deg);
+    }
+    .cta-box { padding: 56px 30px; }
+  }
+  @media (max-width: 560px) {
+    .hero { padding: 110px 5% 60px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .stats-wrap { grid-template-columns: 1fr; }
+    .terminal-body { padding: 16px 18px; font-size: 0.74rem; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+<div class="bg-orb orb-3"></div>
+
+<nav>
+  <div class="logo">
+    <span class="logo-brackets">[</span>
+    <span class="logo-text">SNIPER BOT</span>
+    <span class="version">v2.0</span>
+    <span class="logo-brackets">]</span>
+  </div>
+  <div class="nav-links">
+    <a href="#features">Recursos</a>
+    <a href="#estrategia">Estratégia</a>
+    <a href="#stats">Performance</a>
+    <a href="#download" class="btn-nav">// Iniciar</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="status-line">
+      <div class="status-dot"></div>
+      IQ OPTION API · LIVE · MODO STANDARD / PROP DESK
+    </div>
+    <h1>
+      <span class="line-1">Precisão Cirúrgica</span>
+      <span class="line-2">//_Hybrid Sniper</span>
+    </h1>
+    <p>Bot de trading automatizado para IQ Option com inteligência adaptativa, confirmação multi-timeframe e pipeline de threshold unificado. Operando M1 com análise EMA/RSI/MACD/BB/ATR.</p>
+    <div class="hero-actions">
+      <a href="#" onclick="alert('Link de download será adicionado em breve!'); return false;" class="btn-primary">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Executar Bot
+      </a>
+      <a href="#features" class="btn-secondary">
+        Ver Arquitetura →
+      </a>
+    </div>
+
+    <div class="hero-terminal">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="terminal-dots">
+            <div class="t-dot r"></div>
+            <div class="t-dot y"></div>
+            <div class="t-dot g"></div>
+          </div>
+          <div class="terminal-title">execution_engine.py — rich://dashboard</div>
+          <div class="terminal-dots" style="opacity:0"></div>
+        </div>
+        <div class="terminal-body">
+          <div class="t-line t-1"><span class="t-prompt">$</span> <span class="t-cmd">python main.py</span> <span class="t-comment"># Inicializando SNIPER BOT</span></div>
+          <div class="t-line t-2"><span class="t-ok">[OK]</span> <span class="t-metric">IQAPI</span> conectado · saldo: <span class="t-val">$1,248.50</span> · modo: <span class="t-win">PROP_DESK</span></div>
+          <div class="t-line t-3"><span class="t-ok">[OK]</span> <span class="t-metric">47</span> ativos carregados · <span class="t-metric">24 OTC</span> + <span class="t-metric">23 NORMAL</span></div>
+          <div class="t-line t-4"><span class="t-win">[SIGNAL]</span> EURUSD-OTC · <span class="t-win">CALL</span> · score=<span class="t-val">0.84</span> · M5_confirmed · payout=82%</div>
+          <div class="t-line t-5"><span class="t-win">[WIN]</span> PnL +$12.40 · WR=76.3% · streak=3 · daily=+$89.20</div>
+          <div class="t-line t-6"><span class="t-metric">AdaptiveBoost</span>: threshold=0.76 → 0.68 (hora_14_dow_3)<span class="t-bar"><span class="t-bar-fill"></span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="section-head">
+    <span class="section-eyebrow">// Core Modules</span>
+    <h2>Arquitetura de <span class="grad">Alta Performance</span></h2>
+    <p>14 módulos otimizados, 100 testes unitários, pipeline assíncrono non-blocking e inteligência adaptativa com intervalo de confiança binomial.</p>
+  </div>
+  <div class="features-grid">
+    <div class="f-card" onmousemove="this.style.setProperty('--mx', (event.clientX-this.getBoundingClientRect().left)+'px'); this.style.setProperty('--my', (event.clientY-this.getBoundingClientRect().top)+'px');">
+      <div class="f-icon">🎯</div>
+      <h3>Hybrid Sniper Engine</h3>
+      <p>Scoring 5-critérios: EMA trend (0.25) + RSI (0.20) + MACD hist (0.20) + Bollinger (0.15) + ATR volatility boost (0.20).</p>
+    </div>
+    <div class="f-card" onmousemove="this.style.setProperty('--mx', (event.clientX-this.getBoundingClientRect().left)+'px'); this.style.setProperty('--my', (event.clientY-this.getBoundingClientRect().top)+'px');">
+      <div class="f-icon">🛡️</div>
+      <h3>Big Trades Filter</h3>
+      <p>Bloqueia spikes anômalos: |close - open| > 2.5× ATR médio das últimas 14 velas. Anti-notícias, anti-gaps, anti-manipulação.</p>
+    </div>
+    <div class="f-card" onmousemove="this.style.setProperty('--mx', (event.clientX-this.getBoundingClientRect().left)+'px'); this.style.setProperty('--my', (event.clientY-this.getBoundingClientRect().top)+'px');">
+      <div class="f-icon">⚡</div>
+      <h3>MTF M5 Confirmation</h3>
+      <p>Confirmação multi-timeframe: EMA 9 vs EMA 21 em velas M5. Oposto → bloqueio ou penalidade de score 0.15.</p>
+    </div>
+    <div class="f-card" onmousemove="this.style.setProperty('--mx', (event.clientX-this.getBoundingClientRect().left)+'px'); this.style.setProperty('--my', (event.clientY-this.getBoundingClientRect().top)+'px');">
+      <div class="f-icon">🧠</div>
+      <h3>Adaptive Intelligence</h3>
+      <p>Tracking por ativo+hora+dia_semana com CI binomial. Boost (WR≥70%) e cooldown (WR&lt;35%) com expiração de 7 dias.</p>
+    </div>
+    <div class="f-card" onmousemove="this.style.setProperty('--mx', (event.clientX-this.getBoundingClientRect().left)+'px'); this.style.setProperty('--my', (event.clientY-this.getBoundingClientRect().top)+'px');">
+      <div class="f-icon">📊</div>
+      <h3>Dynamic Threshold</h3>
+      <p>Threshold personalizado por WR histórico. Ativos novos: 0.92; WR≥70%: -0.05; WR&lt;50%: +0.08. Clamp [0.72, 0.95].</p>
+    </div>
+    <div class="f-card" onmousemove="this.style.setProperty('--mx', (event.clientX-this.getBoundingClientRect().left)+'px'); this.style.setProperty('--my', (event.clientY-this.getBoundingClientRect().top)+'px');">
+      <div class="f-icon">⏱️</div>
+      <h3>Entry Timing M1</h3>
+      <p>Sinais pendentes multi-ativo com janela 0-25s. Minuto mudou? sinal expira. Validação recheck antes do execute.</p>
+    </div>
+    <div class="f-card" onmousemove="this.style.setProperty('--mx', (event.clientX-this.getBoundingClientRect().left)+'px'); this.style.setProperty('--my', (event.clientY-this.getBoundingClientRect().top)+'px');">
+      <div class="f-icon">📈</div>
+      <h3>Prop Desk Mode</h3>
+      <p>Simulação de prop firm: 2% loss/dia, 5% drawdown, 5 trades/dia, cooldown de 2 dias após loss. Regras restritivas.</p>
+    </div>
+    <div class="f-card" onmousemove="this.style.setProperty('--mx', (event.clientX-this.getBoundingClientRect().left)+'px'); this.style.setProperty('--my', (event.clientY-this.getBoundingClientRect().top)+'px');">
+      <div class="f-icon">🔔</div>
+      <h3>Telegram + Dashboards</h3>
+      <p>10 builders de mensagem Telegram + dashboard Rich (terminal) e GUI PyQt5 com gráfico de velas live pyqtgraph.</p>
+    </div>
+    <div class="f-card" onmousemove="this.style.setProperty('--mx', (event.clientX-this.getBoundingClientRect().left)+'px'); this.style.setProperty('--my', (event.clientY-this.getBoundingClientRect().top)+'px');">
+      <div class="f-icon">🧪</div>
+      <h3>Daily Audit 23:55 UTC</h3>
+      <p>Auditoria automática: WR, drawdown, trades. Decide APROVADO ou ALERTA (modo rígido no dia seguinte).</p>
+    </div>
+  </div>
+</section>
+
+<section class="stats-band" id="stats">
+  <div class="section-head">
+    <span class="section-eyebrow">// Performance Metrics</span>
+    <h2>Validação <span class="grad">Robusta</span></h2>
+  </div>
+  <div class="stats-wrap">
+    <div class="s-card">
+      <div class="s-num">100+</div>
+      <div class="s-label">Testes Unitários</div>
+    </div>
+    <div class="s-card">
+      <div class="s-num">47</div>
+      <div class="s-label">Pares Forex Monitorados</div>
+    </div>
+    <div class="s-card">
+      <div class="s-num">5x</div>
+      <div class="s-label">Otimização CPU</div>
+    </div>
+    <div class="s-card">
+      <div class="s-num">0s</div>
+      <div class="s-label">Blocking Time (Async)</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-strat" id="estrategia">
+  <div class="section-head">
+    <span class="section-eyebrow">// Pipeline de Análise</span>
+    <h2>Do Candle ao <span class="grad">Sinal Validado</span></h2>
+    <p>6 estágios orquestrados pelo ExecutionEngine com clamp final único e diagnóstico completo em log.</p>
+  </div>
+  <div class="pipeline">
+    <div class="pipe-step">
+      <div class="pipe-idx">01</div>
+      <div class="pipe-name">Candles M1</div>
+      <div class="pipe-desc">100 velas + store SQLite</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-idx">02</div>
+      <div class="pipe-name">Big Trades</div>
+      <div class="pipe-desc">Filtro anti-spike × 2.5 ATR</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-idx">03</div>
+      <div class="pipe-name">Hybrid Score</div>
+      <div class="pipe-desc">EMA + RSI + MACD + BB + ATR</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-idx">04</div>
+      <div class="pipe-name">Profile Filters</div>
+      <div class="pipe-desc">5 filtros adaptativos de perfil</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-idx">05</div>
+      <div class="pipe-name">M5 + HourCooldown</div>
+      <div class="pipe-desc">Confirmação MTF + CI binomial</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-idx">06</div>
+      <div class="pipe-name">Threshold + Boost</div>
+      <div class="pipe-desc">Dinâmico + adaptativo → clamp</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="download">
+  <div class="cta-box">
+    <h2>Pronto para operar com <span class="grad">precisão de sniper?</span></h2>
+    <p>Execute agora em Standard ou Prop Desk. Integração IQ Option, Telegram e GUI PyQt5 inclusas. Pipeline com 100 testes cobrindo todos os subsistemas críticos.</p>
+    <a href="#" onclick="alert('Link de download será adicionado em breve!'); return false;" class="btn-big">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Instalar SNIPER BOT v2.0
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="f-brand">[ SNIPER BOT v2.0 ] — IQ Option Automated Trading</div>
+  <p>ExecutionEngine · HybridSniper · Adaptive Intelligence · Trade Reconciliation</p>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.f-card, .s-card, .pipe-step').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.7s ease-out, transform 0.7s ease-out';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>

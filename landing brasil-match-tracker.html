@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brasil Match Tracker - Análises IA para Futebol Brasileiro</title>
+  <meta name="description" content="Acompanhe partidas de futebol brasileiro com análises de IA em tempo real. Palpites, estatísticas e muito mais." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0e1a;
+      color: #f1f5f9;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0e1a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #3b82f6, #8b5cf6);
+      border-radius: 8px;
+    }
+
+    /* ===== UTILITY ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 36px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.5);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 36px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #f1f5f9;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 14px;
+      background: rgba(59, 130, 246, 0.15);
+      color: #3b82f6;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 16px 0;
+      background: rgba(10, 14, 26, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: all 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      background: rgba(10, 14, 26, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #f1f5f9;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #f1f5f9;
+    }
+
+    .nav-cta {
+      padding: 8px 20px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 8px;
+      color: #fff !important;
+      font-weight: 600;
+      transition: all 0.3s !important;
+    }
+
+    .nav-cta:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Mobile Menu */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .menu-toggle span {
+      width: 26px;
+      height: 2px;
+      background: #f1f5f9;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 160px 0 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.08), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.06), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-content h1 {
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .hero-content p {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.6);
+      max-width: 480px;
+      margin-bottom: 32px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .hero-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-image .mockup {
+      width: 100%;
+      max-width: 560px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+    }
+
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 16px;
+    }
+
+    .mockup-header .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mockup-header .dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .mockup-header .dots span:nth-child(1) { background: #ef4444; }
+    .mockup-header .dots span:nth-child(2) { background: #f59e0b; }
+    .mockup-header .dots span:nth-child(3) { background: #22c55e; }
+
+    .mockup-header .mockup-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.5px;
+    }
+
+    .mockup-match {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      transition: background 0.2s;
+    }
+
+    .mockup-match:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .mockup-match .teams {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .mockup-match .teams .vs {
+      color: rgba(255, 255, 255, 0.2);
+      font-weight: 400;
+    }
+
+    .mockup-match .status {
+      font-size: 11px;
+      padding: 2px 12px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .status-live {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    .status-upcoming {
+      background: rgba(59, 130, 246, 0.12);
+      color: #3b82f6;
+    }
+
+    .status-finished {
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .mockup-ai {
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(139, 92, 246, 0.08));
+      border: 1px solid rgba(59, 130, 246, 0.1);
+      border-radius: 12px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mockup-ai strong {
+      color: #f1f5f9;
+    }
+
+    /* ===== FEATURES ===== */
+    .features {
+      padding: 80px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .features .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .features .section-header h2 {
+      font-size: 38px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .features .section-header p {
+      color: rgba(255, 255, 255, 0.5);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      padding: 32px 28px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(59, 130, 246, 0.15);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .feature-icon.blue { background: rgba(59, 130, 246, 0.12); }
+    .feature-icon.purple { background: rgba(139, 92, 246, 0.12); }
+    .feature-icon.pink { background: rgba(236, 72, 153, 0.12); }
+    .feature-icon.green { background: rgba(34, 197, 94, 0.12); }
+    .feature-icon.orange { background: rgba(245, 158, 11, 0.12); }
+    .feature-icon.cyan { background: rgba(6, 182, 212, 0.12); }
+
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* ===== STATS ===== */
+    .stats {
+      padding: 60px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 32px;
+      text-align: center;
+    }
+
+    .stat-item .number {
+      font-size: 40px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-item .label {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 4px;
+    }
+
+    /* ===== CTA ===== */
+    .cta {
+      padding: 80px 0 100px;
+      text-align: center;
+    }
+
+    .cta .container {
+      max-width: 600px;
+    }
+
+    .cta h2 {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .cta p {
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 32px;
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      padding: 40px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .footer a {
+      color: rgba(255, 255, 255, 0.3);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer a:hover {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .hero .container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-content p {
+        margin: 0 auto 32px;
+      }
+
+      .hero-badges {
+        justify-content: center;
+      }
+
+      .hero-actions {
+        justify-content: center;
+      }
+
+      .hero-image .mockup {
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      .hero-content h1 {
+        font-size: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        padding: 24px;
+        background: rgba(10, 14, 26, 0.98);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        gap: 16px;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+
+      .hero {
+        padding: 120px 0 60px;
+      }
+
+      .hero-content h1 {
+        font-size: 32px;
+      }
+
+      .hero-content p {
+        font-size: 16px;
+      }
+
+      .features .section-header h2 {
+        font-size: 28px;
+      }
+
+      .cta h2 {
+        font-size: 30px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-item .number {
+        font-size: 30px;
+      }
+
+      .btn-primary, .btn-secondary {
+        padding: 12px 24px;
+        font-size: 14px;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .cta-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .mockup-match {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 16px;
+      }
+
+      .hero-content h1 {
+        font-size: 26px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="#" class="logo">
+        <span class="logo-icon">⚽</span>
+        Brasil Match Tracker
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#features">Recursos</a></li>
+        <li><a href="#about">Sobre</a></li>
+        <li><a href="#cta" class="nav-cta">Baixar App</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badges">
+          <span class="badge">🚀 Lançamento 2026</span>
+          <span class="badge">🤖 IA Generativa</span>
+          <span class="badge">⚡ Em tempo real</span>
+        </div>
+        <h1>
+          Análises <span class="gradient-text">Inteligentes</span><br />
+          para o Futebol Brasileiro
+        </h1>
+        <p>
+          Acompanhe partidas de clubes brasileiros com palpites gerados por IA,
+          estatísticas em tempo real e mercados de apostas completos.
+        </p>
+        <div class="hero-actions">
+          <a href="#cta" class="btn-primary">
+            📲 Baixar App
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </a>
+          <a href="#features" class="btn-secondary">
+            Ver recursos
+          </a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="mockup">
+          <div class="mockup-header">
+            <div class="dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <span class="mockup-title">⚽ Partidas Futuras</span>
+          </div>
+
+          <div class="mockup-match">
+            <div class="teams">
+              <span>🇧🇷 São Paulo</span>
+              <span class="vs">vs</span>
+              <span>🇧🇷 Santos</span>
+            </div>
+            <span class="status status-upcoming">Em breve</span>
+          </div>
+
+          <div class="mockup-match">
+            <div class="teams">
+              <span>🇧🇷 Flamengo</span>
+              <span class="vs">vs</span>
+              <span>🇧🇷 Palmeiras</span>
+            </div>
+            <span class="status status-live">● Ao Vivo</span>
+          </div>
+
+          <div class="mockup-match">
+            <div class="teams">
+              <span>🇧🇷 Cruzeiro</span>
+              <span class="vs">vs</span>
+              <span>🇧🇷 Atlético-MG</span>
+            </div>
+            <span class="status status-upcoming">Em breve</span>
+          </div>
+
+          <div class="mockup-ai">
+            <span>🤖</span>
+            <span><strong>Palpite IA:</strong> São Paulo 55% × 25% Santos · Over 2.5 gols · Mais de 9.5 escanteios</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Recursos <span class="gradient-text">Poderosos</span></h2>
+        <p>Tudo o que você precisa para acompanhar o futebol brasileiro com inteligência</p>
+      </div>
+      <div class="features-grid">
+
+        <div class="feature-card">
+          <div class="feature-icon blue">📊</div>
+          <h3>Partidas em Tempo Real</h3>
+          <p>Acompanhe jogos ao vivo com placar, estatísticas e indicadores visuais.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon purple">🤖</div>
+          <h3>Palpites com IA</h3>
+          <p>Análises geradas por inteligência artificial com base em dados históricos e atuais.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon pink">🎯</div>
+          <h3>Mercados de Apostas</h3>
+          <p>Previsões para escanteios, gols, cartões, faltas e muito mais.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon green">📈</div>
+          <h3>Estatísticas Avançadas</h3>
+          <p>Classificação, forma recente, confrontos diretos e médias por time.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon orange">🏆</div>
+          <h3>Competições Completas</h3>
+          <p>Brasileirão Série A, B, C, D, Copa do Brasil, Libertadores e mais.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon cyan">⚡</div>
+          <h3>Performance e Cache</h3>
+          <p>Carregamento rápido com cache inteligente e otimização de requisições.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS ===== -->
+  <section class="stats" id="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="number">10+</div>
+          <div class="label">Competições</div>
+        </div>
+        <div class="stat-item">
+          <div class="number">1.000+</div>
+          <div class="label">Partidas por Temporada</div>
+        </div>
+        <div class="stat-item">
+          <div class="number">12</div>
+          <div class="label">Mercados de Apostas</div>
+        </div>
+        <div class="stat-item">
+          <div class="number">95%</div>
+          <div class="label">Precisão dos Dados</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="cta" id="cta">
+    <div class="container">
+      <h2>Pronto para <span class="gradient-text">transformar</span> sua experiência?</h2>
+      <p>
+        Baixe o Brasil Match Tracker agora e comece a acompanhar o futebol
+        brasileiro com análises de IA em tempo real.
+      </p>
+      <div class="cta-actions">
+        <a href="#" class="btn-primary" id="downloadBtn">
+          📲 Baixar App
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+      <p style="font-size: 13px; color: rgba(255,255,255,0.2); margin-top: 16px;">
+        Disponível em breve. Inscreva-se para receber novidades.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>
+        © 2026 <a href="#">Brasil Match Tracker</a> — Feito com ⚽ por fãs do futebol brasileiro.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // ===== Navbar Scroll =====
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // ===== Mobile Menu =====
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('active');
+      navLinks.classList.toggle('open');
+    });
+
+    // Close menu on link click (mobile)
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // ===== Download Button (placeholder) =====
+    const downloadBtn = document.getElementById('downloadBtn');
+    downloadBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      // 🔥 SUBSTITUIR PELO LINK REAL DO DOWNLOAD
+      alert('🚧 Link de download será adicionado em breve!');
+      // Exemplo: window.location.href = 'https://seusite.com/download';
+    });
+
+    // ===== Smooth Scroll for anchor links =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
